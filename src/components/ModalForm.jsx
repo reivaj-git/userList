@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useForm } from "react-hook-form"
 
-const ModalForm = ({ isShowModal, createUser, isUserUpdate, updateUser, resetModalForm }) => {
+const ModalForm = ({ isShowModal, createUser, isUserUpdate, updateUser, resetModalForm, handleCloseModal }) => {
 
   const { register, handleSubmit, reset } = useForm();
 
@@ -15,9 +15,10 @@ const ModalForm = ({ isShowModal, createUser, isUserUpdate, updateUser, resetMod
     
   }
 
-  const handleCloseModal = () => {
-    resetModalForm(reset)
-  }
+  const handleCloseModalButton = () => {
+    handleCloseModal();
+    resetModalForm(reset);
+  };
 
   useEffect(() => {
     if (isUserUpdate) {
@@ -71,7 +72,7 @@ const ModalForm = ({ isShowModal, createUser, isUserUpdate, updateUser, resetMod
           />
         </div>
 
-        <button onClick={handleCloseModal} type="button" className="absolute top-2 right-2 text-2xl hover:text-nightPeach"> <i className='bx bxs-x-circle'></i></button>
+        <button onClick={handleCloseModalButton} type="button" className="absolute top-2 right-2 text-2xl hover:text-nightPeach"> <i className='bx bxs-x-circle'></i></button>
 
         <button className="btn-primary ">{isUserUpdate ? "Guardar cambios" : "Agregar nuevo usuario"} </button>
 

@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import ModalForm from "./components/ModalForm";
 import axios from "axios";
 import UserList from "./components/UserList";
+import NotificationModal from "./components/NotificationModal";
 
 const BASE_URL = "https://users-crud.academlo.tech/"
 
@@ -14,10 +15,14 @@ const DEFAULT_VALUES = {
   birthday: "",
 }
 
+// Funciones
+
 function App() {
-  const [isUserUpdate, setIsUserUpdate] = useState(null)
+  const [isUserUpdate, setIsUserUpdate] = useState(null);
   const [isShowModal, setIsShowModal] = useState(false);
-  const [users, setUsers] = useState([])
+  const [users, setUsers] = useState([]);
+  const [notification, setNotification] = useState("");
+  const [showNotification, setShowNotification] = useState(false);
 
   const chageShowModel = () => setIsShowModal(!isShowModal);
 
@@ -37,6 +42,8 @@ function App() {
       .then(() => {
         getAllUsers()
         resetModalForm(reset)
+        setNotification("Usuario creado exitosamente");
+        setShowNotification(true);
       })
       .catch((err) => console.log(err))
   }
@@ -45,21 +52,29 @@ function App() {
   const deleteUser = (id) => {
     const url = BASE_URL + `/users/${id}/`
 
-    axios.delete(url)
-      .then(() => getAllUsers())
+    axios
+      .delete(url)
+      .then(() => {
+        getAllUsers()
+        setNotification("Usuario eliminado exitosamente")
+        setShowNotification(true)
+      })
       .catch((err) => console.log(err))
   }
 
   const updateUser = (data, reset) => {
     const url = BASE_URL + `/users/${isUserUpdate.id}/`
 
-    axios.patch(url, data)
+    axios
+      .patch(url, data)
       .then(() => {
-        getAllUsers()
-        resetModalForm(reset)
+        getAllUsers();
+        resetModalForm(reset);
+        setNotification("Usuario actualizado exitosamente");
+        setShowNotification(true);
       })
-      .catch((err) => console.log(err))
-  } 
+      .catch((err) => console.log(err));
+  }
 
   const resetModalForm = (reset) => {
     setIsShowModal(false)
@@ -67,10 +82,17 @@ function App() {
     setIsUserUpdate(null)
   }
 
+  const handleCloseModal = () => {
+    setShowNotification(false);
+  };
+
 
   useEffect(() => {
     getAllUsers()
   }, [])
+
+  
+
 
 
   return (
@@ -84,13 +106,20 @@ function App() {
           isUserUpdate={isUserUpdate}
           updateUser={updateUser}
           resetModalForm={resetModalForm}
-          />
-          
+          handleCloseModal={handleCloseModal}
+        />
 
-        <UserList 
-        users={users} 
-        deleteUser={deleteUser} 
-        chageShowModel={chageShowModel} 
+        <NotificationModal
+          showNotification={showNotification}
+          notification={notification}
+          handleCloseModal={handleCloseModal}
+        />
+
+
+        <UserList
+          users={users}
+          deleteUser={deleteUser}
+          chageShowModel={chageShowModel}
           setIsUserUpdate={setIsUserUpdate}
         />
 
@@ -99,6 +128,6 @@ function App() {
   )
 }
 
-// 1.37
+
 
 export default App
